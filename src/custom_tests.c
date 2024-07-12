@@ -23,8 +23,8 @@ bool is_vowel(char c) {
 
 /*
   Example 1: Returns true if all test cases pass. False otherwise.
-    The function greater_than_forty_two(int x) will return true if x > 42. False otherwise.
-    Note: This test is NOT comprehensive
+    The function greater_than_forty_two(int x) will return true if x > 42. False
+  otherwise. Note: This test is NOT comprehensive
 */
 bool test_greater_than_forty_two() {
   int testcase_1 = 42;
@@ -50,9 +50,8 @@ bool test_greater_than_forty_two() {
 
 /*
   Example 2: Returns true if all test cases pass. False otherwise.
-    The function is_vowel(char c) will return true if c is a vowel (i.e. c is a,e,i,o,u)
-    and returns false otherwise
-    Note: This test is NOT comprehensive
+    The function is_vowel(char c) will return true if c is a vowel (i.e. c is
+  a,e,i,o,u) and returns false otherwise Note: This test is NOT comprehensive
 */
 bool test_is_vowel() {
   char testcase_1 = 'a';
@@ -98,36 +97,57 @@ bool test_is_vowel() {
 
 bool test_is_tail() {
   // TODO: Implement this function.
+  if (!assert_true("tail_a", is_tail('a'))) {
+    return false;
+  }
   return true;
 }
 
 bool test_is_head() {
   // TODO: Implement this function.
+  if (!assert_false("head_a", is_head('a'))) {
+    return false;
+  }
   return true;
 }
 
 bool test_is_snake() {
   // TODO: Implement this function.
+  if (!assert_true("snake_v", is_snake('x'))) {
+    return false;
+  }
   return true;
 }
 
 bool test_body_to_tail() {
   // TODO: Implement this function.
+  if (!assert_equals_char("b2t_v", 's', body_to_tail('v'))) {
+    return false;
+  }
   return true;
 }
 
 bool test_head_to_body() {
   // TODO: Implement this function.
+  if (!assert_equals_char("h2b_W", '^', head_to_body('W'))) {
+    return false;
+  }
   return true;
 }
 
 bool test_get_next_row() {
   // TODO: Implement this function.
+  if (!assert_equals_int("gnr_s", 8, get_next_row(7, 's'))) {
+    return false;
+  }
   return true;
 }
 
 bool test_get_next_col() {
   // TODO: Implement this function.
+  if (!assert_equals_int("gnc_D", 8, get_next_col(7, 'D'))) {
+    return false;
+  }
   return true;
 }
 

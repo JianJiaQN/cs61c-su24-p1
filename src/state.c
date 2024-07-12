@@ -132,7 +132,7 @@ static void set_board_at(game_state_t *state, unsigned int row,
 */
 static bool is_tail(char c) {
   // TODO: Implement this function.
-  return true;
+  return ((c == 'w') || (c == 'a') || ('s' == c) || ('d' == c));
 }
 
 /*
@@ -142,7 +142,11 @@ static bool is_tail(char c) {
 */
 static bool is_head(char c) {
   // TODO: Implement this function.
-  return true;
+  return (('W' == c) || ('A' == c) || ('S' == c) || ('D' == c) || ('x' == c));
+}
+
+static bool is_body(char c) {
+  return (('>' == c) || ('<' == c) || ('^' == c) || ('v' == c));
 }
 
 /*
@@ -151,7 +155,7 @@ static bool is_head(char c) {
 */
 static bool is_snake(char c) {
   // TODO: Implement this function.
-  return true;
+  return (is_head(c) || is_tail(c) || is_body(c));
 }
 
 /*
@@ -161,7 +165,18 @@ static bool is_snake(char c) {
 */
 static char body_to_tail(char c) {
   // TODO: Implement this function.
-  return '?';
+  switch (c) {
+  case '>':
+    return 'd';
+  case '<':
+    return 'a';
+  case '^':
+    return 'w';
+  case 'v':
+    return 's';
+  default:
+    return '?';
+  }
 }
 
 /*
@@ -171,7 +186,18 @@ static char body_to_tail(char c) {
 */
 static char head_to_body(char c) {
   // TODO: Implement this function.
-  return '?';
+  switch (c) {
+  case 'W':
+    return '^';
+  case 'A':
+    return '<';
+  case 'S':
+    return 'v';
+  case 'D':
+    return '>';
+  default:
+    return '?';
+  }
 }
 
 /*
@@ -181,7 +207,13 @@ static char head_to_body(char c) {
 */
 static unsigned int get_next_row(unsigned int cur_row, char c) {
   // TODO: Implement this function.
-  return cur_row;
+  if (('v' == c) || ('s' == c) || ('S' == c)) {
+    return cur_row + 1;
+  } else if (('w' == c) || ('W' == c) || ('^' == c)) {
+    return cur_row - 1;
+  } else {
+    return cur_row;
+  }
 }
 
 /*
@@ -191,7 +223,13 @@ static unsigned int get_next_row(unsigned int cur_row, char c) {
 */
 static unsigned int get_next_col(unsigned int cur_col, char c) {
   // TODO: Implement this function.
-  return cur_col;
+  if (('>' == c) || ('d' == c) || ('D' == c)) {
+    return cur_col + 1;
+  } else if (('<' == c) || ('a' == c) || ('A' == c)) {
+    return cur_col - 1;
+  } else {
+    return cur_col;
+  }
 }
 
 /*
@@ -204,6 +242,17 @@ static unsigned int get_next_col(unsigned int cur_col, char c) {
 */
 static char next_square(game_state_t *state, unsigned int snum) {
   // TODO: Implement this function.
+  if (state && state->num_snakes > snum) {
+    const snake_t snake = (state->snakes)[snum];
+    const char c = get_board_at(state, snake.head_row, snake.head_col);
+    if (snake.live) {
+      unsigned int row = get_next_row(snake.head_row, c);
+      unsigned int col = get_next_col(snake.head_col, c);
+      return get_board_at(state, row, col);
+    } else {
+      return c;
+    }
+  }
   return '?';
 }
 
@@ -221,6 +270,18 @@ static char next_square(game_state_t *state, unsigned int snum) {
 */
 static void update_head(game_state_t *state, unsigned int snum) {
   // TODO: Implement this function.
+  if (state && state->num_snakes > snum) {
+    const snake_t snake = (state->snakes)[snum];
+    const char c = get_board_at(state, snake.head_row, snake.head_col);
+    if (snake.live) {
+      set_board_at(state, snake.head_row, snake.head_col, head_to_body(c));
+      unsigned int row = get_next_row(snake.head_row, c);
+      unsigned int col = get_next_col(snake.head_col, c);
+      set_board_at(state, row, col, c);
+      (state->snakes)[snum].head_col = col;
+      (state->snakes)[snum].head_row = row;
+    }
+  }
   return;
 }
 
@@ -236,12 +297,42 @@ static void update_head(game_state_t *state, unsigned int snum) {
 */
 static void update_tail(game_state_t *state, unsigned int snum) {
   // TODO: Implement this function.
+  if (state && state->num_snakes > snum) {
+    const snake_t snake = (state->snakes)[snum];
+    if (snake.live) {
+      char c = get_board_at(state, snake.tail_row, snake.tail_col);
+      set_board_at(state, snake.tail_row, snake.tail_col, ' ');
+      unsigned int row = get_next_row(snake.tail_row, c);
+      unsigned int col = get_next_col(snake.tail_col, c);
+      c = get_board_at(state, row, col);
+      set_board_at(state, row, col, body_to_tail(c));
+      (state->snakes)[snum].tail_col = col;
+      (state->snakes)[snum].tail_row = row;
+    }
+  }
   return;
 }
 
 /* Task 4.5 */
 void update_state(game_state_t *state, int (*add_food)(game_state_t *state)) {
   // TODO: Implement this function.
+  if (state == NULL) {
+    return;
+  }
+  for (unsigned int i = 0; i < state->num_snakes; i++) {
+    char c = next_square(state, i);
+    if ('#' == c || is_snake(c)) {
+      snake_t snake = (state->snakes)[i];
+      (state->snakes)[i].live = false;
+      set_board_at(state, snake.head_row, snake.head_col, 'x');
+    } else if ('*' == c) {
+      update_head(state, i);
+      add_food(state);
+    } else if (' ' == c) {
+      update_head(state, i);
+      update_tail(state, i);
+    }
+  }
   return;
 }
 
