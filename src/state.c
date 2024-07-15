@@ -365,6 +365,7 @@ game_state_t *load_board(FILE *fp) {
     }
     (game->board)[i] = malloc(sizeof(char) * (strlen(line) + 1));
     strcpy((game->board)[i], line);
+    free(line);
     line = read_line(fp);
   }
   if (0 == i) {
@@ -388,11 +389,36 @@ game_state_t *load_board(FILE *fp) {
 */
 static void find_head(game_state_t *state, unsigned int snum) {
   // TODO: Implement this function.
+  snake_t *snake = state->snakes + snum;
+  unsigned int row = snake->tail_row, col = snake->tail_col;
+  char c = get_board_at(state, row, col);
+  while (!is_head(c)) {
+    row = get_next_row(row, c);
+    col = get_next_col(col, c);
+    c = get_board_at(state, row, col);
+  }
+  snake->head_col = col;
+  snake->head_row = row;
   return;
 }
 
 /* Task 6.2 */
 game_state_t *initialize_snakes(game_state_t *state) {
   // TODO: Implement this function.
-  return NULL;
+  unsigned int num_snakes = 0;
+  for (unsigned int i = 0; i < state->num_rows; i++) {
+    for (unsigned int j = 0; j < strlen((state->board)[0]); j++) {
+      // no need for the last char ('\n')
+      if (is_tail(get_board_at(state, i, j))) {
+        num_snakes++;
+        state->snakes = realloc(state->snakes, sizeof(snake_t) * num_snakes);
+        (state->snakes)[num_snakes - 1].tail_col = j;
+        (state->snakes)[num_snakes - 1].tail_row = i;
+        find_head(state, num_snakes - 1);
+        (state->snakes)[num_snakes - 1].live = true;
+      }
+    }
+  }
+  state->num_snakes = num_snakes;
+  return state;
 }

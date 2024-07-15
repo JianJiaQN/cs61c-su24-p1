@@ -26,7 +26,8 @@ bool test_create_default_state() {
     return false;
   }
 
-  if (!assert_equals_unsigned_int("board height", DEFAULT_BOARD_HEIGHT, state->num_rows)) {
+  if (!assert_equals_unsigned_int("board height", DEFAULT_BOARD_HEIGHT,
+                                  state->num_rows)) {
     return false;
   }
 
@@ -38,7 +39,8 @@ bool test_create_default_state() {
 
   for (unsigned int row = 0; row < DEFAULT_BOARD_HEIGHT; row++) {
     for (unsigned int col = 0; col < DEFAULT_BOARD_WIDTH; col++) {
-      if (row == 0 || col == 0 || row == DEFAULT_BOARD_HEIGHT - 1 || col == DEFAULT_BOARD_WIDTH - 1) {
+      if (row == 0 || col == 0 || row == DEFAULT_BOARD_HEIGHT - 1 ||
+          col == DEFAULT_BOARD_WIDTH - 1) {
         if (!assert_map_equals(state, row, col, '#')) {
           return false;
         }
@@ -68,7 +70,9 @@ bool test_create_default_state() {
     if (!(get_board_at(state, row, DEFAULT_BOARD_WIDTH) == '\0' ||
           (get_board_at(state, row, DEFAULT_BOARD_WIDTH) == '\n' &&
            get_board_at(state, row, DEFAULT_BOARD_WIDTH + 1) == '\0'))) {
-      printf("Warning: we think row %d of your board does not end in a null byte\n", row);
+      printf("Warning: we think row %d of your board does not end in a null "
+             "byte\n",
+             row);
     }
   }
 
@@ -76,16 +80,20 @@ bool test_create_default_state() {
     return false;
   }
 
-  if (!assert_equals_unsigned_int("row of snake tail", 2, state->snakes->tail_row)) {
+  if (!assert_equals_unsigned_int("row of snake tail", 2,
+                                  state->snakes->tail_row)) {
     return false;
   }
-  if (!assert_equals_unsigned_int("col of snake tail", 2, state->snakes->tail_col)) {
+  if (!assert_equals_unsigned_int("col of snake tail", 2,
+                                  state->snakes->tail_col)) {
     return false;
   }
-  if (!assert_equals_unsigned_int("row of snake head", 2, state->snakes->head_row)) {
+  if (!assert_equals_unsigned_int("row of snake head", 2,
+                                  state->snakes->head_row)) {
     return false;
   }
-  if (!assert_equals_unsigned_int("col of snake head", 4, state->snakes->head_col)) {
+  if (!assert_equals_unsigned_int("col of snake head", 4,
+                                  state->snakes->head_col)) {
     return false;
   }
   if (!assert_true("snake is alive", state->snakes->live)) {
@@ -101,8 +109,8 @@ bool test_free_state() {
   game_state_t *state = create_default_state();
   free_state(state);
 
-  printf("%s\n",
-         "This test case only checks for leaks in Tasks 1 and 2. Make sure that no Valgrind errors are printed!");
+  printf("%s\n", "This test case only checks for leaks in Tasks 1 and 2. Make "
+                 "sure that no Valgrind errors are printed!");
 
   return true;
 }
@@ -148,7 +156,8 @@ bool test_print_board_1() {
   actual[file_size] = '\0';
 
   if (strcmp(expected, actual) != 0) {
-    printf("%s\n", "Your printed board doesn't match the expected output. See unit-test-out.snk for what you printed.");
+    printf("%s\n", "Your printed board doesn't match the expected output. See "
+                   "unit-test-out.snk for what you printed.");
     return false;
   }
 
@@ -184,7 +193,8 @@ bool test_print_board_2() {
   actual[file_size] = '\0';
 
   if (strcmp(expected, actual) != 0) {
-    printf("%s\n", "Your printed board doesn't match the expected output. See unit-test-out.snk for what you printed.");
+    printf("%s\n", "Your printed board doesn't match the expected output. See "
+                   "unit-test-out.snk for what you printed.");
     return false;
   }
 
@@ -195,12 +205,14 @@ bool test_print_board_2() {
 
 bool test_print_board() {
   if (!test_print_board_1()) {
-    printf("%s\n", "test_print_board_1 failed. Check unit-test-out.snk for a diagram of the board.");
+    printf("%s\n", "test_print_board_1 failed. Check unit-test-out.snk for a "
+                   "diagram of the board.");
     return false;
   }
 
   if (!test_print_board_2()) {
-    printf("%s\n", "test_print_board_2 failed. Check unit-test-out.snk for a diagram of the board.");
+    printf("%s\n", "test_print_board_2 failed. Check unit-test-out.snk for a "
+                   "diagram of the board.");
     return false;
   }
 
@@ -237,7 +249,8 @@ bool test_next_square_board_1() {
   save_board(actual_state, "unit-test-out.snk");
 
   // the next square for the snake should be ' '
-  if (!assert_equals_char("next_square on board 1", ' ', next_square(actual_state, 0))) {
+  if (!assert_equals_char("next_square on board 1", ' ',
+                          next_square(actual_state, 0))) {
     return false;
   }
 
@@ -286,7 +299,8 @@ bool test_next_square_board_2() {
   save_board(state, "unit-test-out.snk");
 
   // the next square for the snake should be '*'
-  if (!assert_equals_char("next_square on board 2", '*', next_square(state, 0))) {
+  if (!assert_equals_char("next_square on board 2", '*',
+                          next_square(state, 0))) {
     return false;
   }
 
@@ -327,7 +341,8 @@ bool test_next_square_board_3() {
   save_board(state, "unit-test-out.snk");
 
   // the next square for the snake should be 'x'
-  if (!assert_equals_char("next_square on board 3", 'x', next_square(state, 0))) {
+  if (!assert_equals_char("next_square on board 3", 'x',
+                          next_square(state, 0))) {
     return false;
   }
 
@@ -371,7 +386,8 @@ bool test_next_square_board_4() {
   save_board(state, "unit-test-out.snk");
 
   // the next square for the snake should be '#'
-  if (!assert_equals_char("next_square on board 4", '#', next_square(state, 0))) {
+  if (!assert_equals_char("next_square on board 4", '#',
+                          next_square(state, 0))) {
     return false;
   }
 
@@ -416,7 +432,8 @@ bool test_next_square_board_5() {
   save_board(state, "unit-test-out.snk");
 
   // the next square for the snake should be ' '
-  if (!assert_equals_char("next_square on board 5", ' ', next_square(state, 0))) {
+  if (!assert_equals_char("next_square on board 5", ' ',
+                          next_square(state, 0))) {
     return false;
   }
 
@@ -462,7 +479,8 @@ bool test_next_square_board_6() {
   save_board(state, "unit-test-out.snk");
 
   // the next square for the snake should be '#'
-  if (!assert_equals_char("next_square on board 6", '#', next_square(state, 0))) {
+  if (!assert_equals_char("next_square on board 6", '#',
+                          next_square(state, 0))) {
     return false;
   }
 
@@ -473,32 +491,38 @@ bool test_next_square_board_6() {
 
 bool test_next_square() {
   if (!test_next_square_board_1()) {
-    printf("%s\n", "test_next_square_board_1 failed. Check unit-test-out.snk for a diagram of the board.");
+    printf("%s\n", "test_next_square_board_1 failed. Check unit-test-out.snk "
+                   "for a diagram of the board.");
     return false;
   }
 
   if (!test_next_square_board_2()) {
-    printf("%s\n", "test_next_square_board_2 failed. Check unit-test-out.snk for a diagram of the board.");
+    printf("%s\n", "test_next_square_board_2 failed. Check unit-test-out.snk "
+                   "for a diagram of the board.");
     return false;
   }
 
   if (!test_next_square_board_3()) {
-    printf("%s\n", "test_next_square_board_3 failed. Check unit-test-out.snk for a diagram of the board.");
+    printf("%s\n", "test_next_square_board_3 failed. Check unit-test-out.snk "
+                   "for a diagram of the board.");
     return false;
   }
 
   if (!test_next_square_board_4()) {
-    printf("%s\n", "test_next_square_board_4 failed. Check unit-test-out.snk for a diagram of the board.");
+    printf("%s\n", "test_next_square_board_4 failed. Check unit-test-out.snk "
+                   "for a diagram of the board.");
     return false;
   }
 
   if (!test_next_square_board_5()) {
-    printf("%s\n", "test_next_square_board_5 failed. Check unit-test-out.snk for a diagram of the board.");
+    printf("%s\n", "test_next_square_board_5 failed. Check unit-test-out.snk "
+                   "for a diagram of the board.");
     return false;
   }
 
   if (!test_next_square_board_6()) {
-    printf("%s\n", "test_next_square_board_6 failed. Check unit-test-out.snk for a diagram of the board.");
+    printf("%s\n", "test_next_square_board_6 failed. Check unit-test-out.snk "
+                   "for a diagram of the board.");
     return false;
   }
 
@@ -668,20 +692,20 @@ bool test_update_head_board_3() {
 
 bool test_update_head() {
   if (!test_update_head_board_1()) {
-    printf("%s\n",
-           "test_update_head_board_1 failed. Check unit-test-in.snk, unit-test-out.snk, and unit-test-ref.snk.");
+    printf("%s\n", "test_update_head_board_1 failed. Check unit-test-in.snk, "
+                   "unit-test-out.snk, and unit-test-ref.snk.");
     return false;
   }
 
   if (!test_update_head_board_2()) {
-    printf("%s\n",
-           "test_update_head_board_2 failed. Check unit-test-in.snk, unit-test-out.snk, and unit-test-ref.snk.");
+    printf("%s\n", "test_update_head_board_2 failed. Check unit-test-in.snk, "
+                   "unit-test-out.snk, and unit-test-ref.snk.");
     return false;
   }
 
   if (!test_update_head_board_3()) {
-    printf("%s\n",
-           "test_update_head_board_3 failed. Check unit-test-in.snk, unit-test-out.snk, and unit-test-ref.snk.");
+    printf("%s\n", "test_update_head_board_3 failed. Check unit-test-in.snk, "
+                   "unit-test-out.snk, and unit-test-ref.snk.");
     return false;
   }
 
@@ -874,20 +898,20 @@ bool test_update_tail_board_3() {
 
 bool test_update_tail() {
   if (!test_update_tail_board_1()) {
-    printf("%s\n",
-           "test_update_tail_board_1 failed. Check unit-test-in.snk, unit-test-out.snk, and unit-test-ref.snk.");
+    printf("%s\n", "test_update_tail_board_1 failed. Check unit-test-in.snk, "
+                   "unit-test-out.snk, and unit-test-ref.snk.");
     return false;
   }
 
   if (!test_update_tail_board_2()) {
-    printf("%s\n",
-           "test_update_tail_board_2 failed. Check unit-test-in.snk, unit-test-out.snk, and unit-test-ref.snk.");
+    printf("%s\n", "test_update_tail_board_2 failed. Check unit-test-in.snk, "
+                   "unit-test-out.snk, and unit-test-ref.snk.");
     return false;
   }
 
   if (!test_update_tail_board_3()) {
-    printf("%s\n",
-           "test_update_tail_board_3 failed. Check unit-test-in.snk, unit-test-out.snk, and unit-test-ref.snk.");
+    printf("%s\n", "test_update_tail_board_3 failed. Check unit-test-in.snk, "
+                   "unit-test-out.snk, and unit-test-ref.snk.");
     return false;
   }
 
@@ -1132,26 +1156,26 @@ bool test_update_state_board_4() {
 
 bool test_update_state() {
   if (!test_update_state_board_1()) {
-    printf("%s\n",
-           "test_update_state_board_1 failed. Check unit-test-in.snk, unit-test-out.snk, and unit-test-ref.snk.");
+    printf("%s\n", "test_update_state_board_1 failed. Check unit-test-in.snk, "
+                   "unit-test-out.snk, and unit-test-ref.snk.");
     return false;
   }
 
   if (!test_update_state_board_2()) {
-    printf("%s\n",
-           "test_update_state_board_2 failed. Check unit-test-in.snk, unit-test-out.snk, and unit-test-ref.snk.");
+    printf("%s\n", "test_update_state_board_2 failed. Check unit-test-in.snk, "
+                   "unit-test-out.snk, and unit-test-ref.snk.");
     return false;
   }
 
   if (!test_update_state_board_3()) {
-    printf("%s\n",
-           "test_update_state_board_3 failed. Check unit-test-in.snk, unit-test-out.snk, and unit-test-ref.snk.");
+    printf("%s\n", "test_update_state_board_3 failed. Check unit-test-in.snk, "
+                   "unit-test-out.snk, and unit-test-ref.snk.");
     return false;
   }
 
   if (!test_update_state_board_4()) {
-    printf("%s\n",
-           "test_update_state_board_4 failed. Check unit-test-in.snk, unit-test-out.snk, and unit-test-ref.snk.");
+    printf("%s\n", "test_update_state_board_4 failed. Check unit-test-in.snk, "
+                   "unit-test-out.snk, and unit-test-ref.snk.");
     return false;
   }
 
@@ -1179,7 +1203,8 @@ bool test_read_line_2() {
 
   FILE *fp = fopen("tests/13-sus-in.snk", "r");
 
-  char *expected[] = {"##############\n", "#            #\n", "#  ########  #\n", "#  #      #  #####\n"};
+  char *expected[] = {"##############\n", "#            #\n",
+                      "#  ########  #\n", "#  #      #  #####\n"};
 
   bool success = true;
   for (int i = 0; i < 4; i++) {
@@ -1197,14 +1222,14 @@ bool test_read_line_2() {
 
 bool test_read_line() {
   if (!test_read_line_1()) {
-    printf("%s\n",
-           "test_read_line_1 failed. Check the first line of tests/01-simple-in.snk for a diagram of the line.");
+    printf("%s\n", "test_read_line_1 failed. Check the first line of "
+                   "tests/01-simple-in.snk for a diagram of the line.");
     return false;
   }
 
   if (!test_read_line_2()) {
-    printf("%s\n",
-           "test_read_line_2 failed. Check the first four lines of tests/13-sus-in.snk for a diagram of the board.");
+    printf("%s\n", "test_read_line_2 failed. Check the first four lines of "
+                   "tests/13-sus-in.snk for a diagram of the board.");
     return false;
   }
 
@@ -1322,16 +1347,19 @@ bool test_load_board_3() {
 
 bool test_load_board() {
   if (!test_load_board_1()) {
-    printf("%s\n", "test_load_board_1 failed. Check tests/01-simple-in.snk for a diagram of the board.");
+    printf("%s\n", "test_load_board_1 failed. Check tests/01-simple-in.snk for "
+                   "a diagram of the board.");
     return false;
   }
 
   if (!test_load_board_2()) {
-    printf("%s\n", "test_load_board_2 failed. Check tests/06-small-in.snk for a diagram of the board.");
+    printf("%s\n", "test_load_board_2 failed. Check tests/06-small-in.snk for "
+                   "a diagram of the board.");
     return false;
   }
   if (!test_load_board_3()) {
-    printf("%s\n", "test_load_board_3 failed. Check tests/13-sus-in.snk for a diagram of the board.");
+    printf("%s\n", "test_load_board_3 failed. Check tests/13-sus-in.snk for a "
+                   "diagram of the board.");
     return false;
   }
 
@@ -1480,12 +1508,14 @@ bool test_find_head_board_2() {
 
 bool test_find_head() {
   if (!test_find_head_board_1()) {
-    printf("%s\n", "test_find_head_board_1 failed. Check unit-test-out.snk for a diagram of the board.");
+    printf("%s\n", "test_find_head_board_1 failed. Check unit-test-out.snk for "
+                   "a diagram of the board.");
     return false;
   }
 
   if (!test_find_head_board_2()) {
-    printf("%s\n", "test_find_head_board_2 failed. Check unit-test-out.snk for a diagram of the board.");
+    printf("%s\n", "test_find_head_board_2 failed. Check unit-test-out.snk for "
+                   "a diagram of the board.");
     return false;
   }
 
@@ -1620,12 +1650,14 @@ bool test_initialize_snakes_board_2() {
 
 bool test_initialize_snakes() {
   if (!test_initialize_snakes_board_1()) {
-    printf("%s\n", "test_initialize_snakes_board_1 failed. Check unit-test-out.snk for a diagram of the board.");
+    printf("%s\n", "test_initialize_snakes_board_1 failed. Check "
+                   "unit-test-out.snk for a diagram of the board.");
     return false;
   }
 
   if (!test_initialize_snakes_board_2()) {
-    printf("%s\n", "test_initialize_snakes_board_2 failed. Check unit-test-out.snk for a diagram of the board.");
+    printf("%s\n", "test_initialize_snakes_board_2 failed. Check "
+                   "unit-test-out.snk for a diagram of the board.");
     return false;
   }
 
@@ -1650,7 +1682,8 @@ int main(int argc, char *argv[]) {
 
   init_colors();
 
-  printf("%s\n", "Reminder: These tests are not comprehensive, and passing them does not guarantee that your "
+  printf("%s\n", "Reminder: These tests are not comprehensive, and passing "
+                 "them does not guarantee that your "
                  "implementation is working.");
 
   if (MEMCHECK_MODE) {
@@ -1659,7 +1692,8 @@ int main(int argc, char *argv[]) {
       return 0;
     }
   } else {
-    if (!test_and_print("create_default_state (Task 1)", test_create_default_state)) {
+    if (!test_and_print("create_default_state (Task 1)",
+                        test_create_default_state)) {
       return 0;
     }
     if (!test_and_print("print_board (Task 3)", test_print_board)) {
