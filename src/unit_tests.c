@@ -176,11 +176,6 @@ bool test_print_board_2() {
   size_t file_size = strlen(expected);
 
   game_state_t *state = create_default_state();
-  // 释放第四行之后的空间，防止内存泄露
-  for (int i = 4; i < state->num_rows; i++) {
-    free((state->board)[i]);
-  }
-  state->board = realloc(state->board, sizeof(char *) * 4);
   state->num_rows = 4;
   strncpy(state->board[3], state->board[0], DEFAULT_BOARD_WIDTH);
   save_board(state, "unit-test-out.snk");
