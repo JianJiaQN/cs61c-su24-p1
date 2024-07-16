@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "snake_utils.h"
 
@@ -339,17 +340,27 @@ void update_state(game_state_t *state, int (*add_food)(game_state_t *state)) {
 /* Task 5.1 */
 char *read_line(FILE *fp) {
   // TODO: Implement this function.
-  char s[100];
-  if (fgets(s, 100, fp)) {
-    // char *ptr = strchr(s, '\n');
-    // unsigned int len = ptr - s + 1;
-    char *line = malloc(sizeof(char) * (strlen(s) + 1));
-    strcpy(line, s);
-    // line[len] = '\0';
-    return line;
-  } else {
-    return NULL;
+  char buffer[128];
+  size_t buffer_len = 0, line_len = 0;
+  char *line = NULL;
+
+  while (fgets(buffer, 128, fp)) {
+    buffer_len = strlen(buffer);
+    line_len += buffer_len;
+    line = realloc(line, sizeof(char) * (line_len + 1));
+    if (line == NULL) {
+      return NULL;
+    }
+    if (line_len == buffer_len) {
+      strcpy(line, buffer);
+    } else {
+      strcat(line, buffer);
+    }
+    if ('\n' == buffer[buffer_len - 1]) {
+      return line;
+    }
   }
+  return NULL;
 }
 
 /* Task 5.2 */
@@ -363,9 +374,10 @@ game_state_t *load_board(FILE *fp) {
       row += 20;
       game->board = realloc(game->board, sizeof(char *) * row);
     }
-    (game->board)[i] = malloc(sizeof(char) * (strlen(line) + 1));
-    strcpy((game->board)[i], line);
-    free(line);
+    //(game->board)[i] = malloc(sizeof(char) * (strlen(line) + 1));
+    // strcpy((game->board)[i], line);
+    // free(line);
+    (game->board)[i] = line;
     line = read_line(fp);
   }
   if (0 == i) {
@@ -393,9 +405,15 @@ static void find_head(game_state_t *state, unsigned int snum) {
   unsigned int row = snake->tail_row, col = snake->tail_col;
   char c = get_board_at(state, row, col);
   while (!is_head(c)) {
-    row = get_next_row(row, c);
-    col = get_next_col(col, c);
-    c = get_board_at(state, row, col);
+    if (is_snake(c)) {
+      row = get_next_row(row, c);
+      col = get_next_col(col, c);
+      c = get_board_at(state, row, col);
+    } else {
+      // 非法的蛇表示
+      snake->live = false;
+      break;
+    }
   }
   snake->head_col = col;
   snake->head_row = row;
@@ -407,7 +425,8 @@ game_state_t *initialize_snakes(game_state_t *state) {
   // TODO: Implement this function.
   unsigned int num_snakes = 0;
   for (unsigned int i = 0; i < state->num_rows; i++) {
-    for (unsigned int j = 0; j < strlen((state->board)[0]); j++) {
+    // 每一行的长度不一定相同
+    for (unsigned int j = 0; j < strlen((state->board)[i]); j++) {
       // no need for the last char ('\n')
       if (is_tail(get_board_at(state, i, j))) {
         num_snakes++;
